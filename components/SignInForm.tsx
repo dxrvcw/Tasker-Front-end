@@ -1,6 +1,7 @@
 'use client'
 
-import { loginUser, setCookieWithExpiry } from '@/data/actions'
+import { loginUser } from '@/data/actions'
+import { useStore } from '@/store/store'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -8,6 +9,7 @@ export function SignInForm() {
 	const [name, setName] = useState('')
 	const [password, setPassword] = useState('')
 
+	const { setToken } = useStore()
 	const router = useRouter()
 
 	const handleSignIn = async () => {
@@ -15,15 +17,18 @@ export function SignInForm() {
 			alert('Введіть усі дані!!!')
 			return
 		}
+
 		const response = await loginUser(name, password)
-		if (response.ok) {
-			const data = await response.json()
-			setCookieWithExpiry('token', data.access_token, 30)
-			router.push('/')
-			window.location.reload()
-		} else {
+
+		if (!response.ok) {
 			alert('Неправильний логін або пароль!!!')
+			return
 		}
+
+		const data = await response.json()
+		setToken(data.access_token)
+		router.push('/')
+		router.refresh()
 	}
 
 	return (

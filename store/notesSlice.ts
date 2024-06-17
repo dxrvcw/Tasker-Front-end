@@ -1,23 +1,19 @@
 import { createNote, deleteNote, getNotes, updateNote } from '@/data/actions'
 import { INote } from '@/utils/definitions'
-import { setCookieWithExpiry } from '@/utils/utils'
-import Cookies from 'js-cookie'
-import { create } from 'zustand'
+import { StateCreator } from 'zustand'
 
-interface IStore {
+export interface NotesSlice {
 	notes: INote[]
 	token: string | null
-	fetchNotes: () => void
-	updateNote: (id: string, title: string, description?: string) => void
-	deleteNote: (id: string) => void
-	createNote: () => void
-	setToken: (token: string | null) => void
-	removeToken: () => void
+	fetchNotes: () => Promise<void>
+	updateNote: (id: string, title: string, description?: string) => Promise<void>
+	deleteNote: (id: string) => Promise<void>
+	createNote: () => Promise<void>
 }
 
-export const useStore = create<IStore>((set, get) => ({
+export const createNotesSlice: StateCreator<NotesSlice> = (set, get) => ({
 	notes: [],
-	token: Cookies.get('token') || null,
+	token: get().token,
 
 	fetchNotes: async () => {
 		const { token } = get()
@@ -56,18 +52,4 @@ export const useStore = create<IStore>((set, get) => ({
 			notes: [...state.notes, newNote],
 		}))
 	},
-
-	setToken: (token: string | null) => {
-		if (token) {
-			setCookieWithExpiry('token', token, 30)
-		} else {
-			Cookies.remove('token')
-		}
-		set({ token })
-	},
-
-	removeToken: () => {
-		Cookies.remove('token')
-		set({ token: null })
-	},
-}))
+})

@@ -1,27 +1,24 @@
 'use client'
 
-import Cookies from 'js-cookie'
+import { useStore } from '@/store/store'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { HeaderNav } from './HeaderNav'
 
 export function Header() {
-	const [token, setToken] = useState<string | undefined>()
+	const { token, removeToken } = useStore()
 	const router = useRouter()
 
-	useEffect(() => {
-		setToken(Cookies.get('token'))
-	}, [])
+	const [clientToken, setClientToken] = useState<string | null>(null)
+
+	useEffect(() => setClientToken(token), [token])
 
 	const handleSignOut = () => {
-		if (token) {
-			Cookies.remove('token')
-			window.location.reload()
-			router.push('/')
-		} else {
-			window.location.reload()
-		}
+		removeToken()
+		setClientToken(null)
+		router.push('/')
+		router.refresh()
 	}
 
 	return (
@@ -29,7 +26,7 @@ export function Header() {
 			<div className='container m-auto flex justify-between'>
 				<HeaderNav />
 				<div>
-					{!token ? (
+					{!clientToken ? (
 						<>
 							<Link href='/sign-in' className='text-white hover:underline mr-8'>
 								Увійти

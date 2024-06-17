@@ -1,6 +1,4 @@
-import Cookies from 'js-cookie'
-
-const baseUrl = 'https://3jxnk4ll-8080.euw.devtunnels.ms'
+const baseUrl = 'https://wqfxr9ht-8080.euw.devtunnels.ms'
 
 export async function registerUser(
 	username: string,
@@ -33,16 +31,6 @@ export async function loginUser(username: string, password: string) {
 		}),
 	})
 	return response
-}
-
-export function setCookieWithExpiry(
-	name: string,
-	value: string,
-	minutes: number
-) {
-	const now = new Date()
-	const expires = new Date(now.getTime() + minutes * 60 * 1000)
-	Cookies.set(name, value, { expires })
 }
 
 export async function getNotes(token: string | undefined) {

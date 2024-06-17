@@ -1,6 +1,7 @@
 'use client'
 
-import { registerUser, setCookieWithExpiry } from '@/data/actions'
+import { registerUser } from '@/data/actions'
+import { useStore } from '@/store/store'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -9,6 +10,7 @@ export function RegisterForm() {
 	const [password, setPassword] = useState('')
 	const [email, setEmail] = useState('')
 
+	const { setToken } = useStore()
 	const router = useRouter()
 
 	async function handleRegister() {
@@ -17,15 +19,17 @@ export function RegisterForm() {
 			return
 		}
 		const response = await registerUser(name, email, password)
-		const data = await response.json()
 
-		if (response.ok) {
-			setCookieWithExpiry('token', data.access_token, 30)
-			router.push('/')
-			window.location.reload()
-		} else {
+		if (!response.ok) {
 			alert('Помилка при реєстрації користувача!')
+			return
 		}
+
+		const data = await response.json()
+		setToken(data.access_token)
+
+		router.push('/')
+		router.refresh()
 	}
 
 	return (

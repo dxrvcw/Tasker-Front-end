@@ -22,5 +22,5 @@ export default function useCookie(name: string, defaultValue: string) {
 		setValue(null)
 	}, [name])
 
-	return [value, updateCookie, deleteCookie]
+	return [value, updateCookie, deleteCookie] as const
 }

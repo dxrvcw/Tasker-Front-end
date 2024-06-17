@@ -1,6 +1,6 @@
 'use client'
 
-import Cookies from 'js-cookie'
+import { useStore } from '@/store/store'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -13,12 +13,12 @@ const links = [
 
 export function HeaderNav() {
 	const pathname = usePathname()
+	const token = useStore(state => state.token)
 
-	const [token, setToken] = useState<string | undefined>()
+	const [clientToken, setClientToken] = useState<string | null>(null)
 
-	useEffect(() => {
-		setToken(Cookies.get('token'))
-	}, [])
+	useEffect(() => setClientToken(token), [token])
+
 	return (
 		<ul className='flex gap-8 items-center'>
 			<li>
@@ -26,7 +26,7 @@ export function HeaderNav() {
 					<Image alt='Logo' src='/logo.png' width={32} height={32} />
 				</Link>
 			</li>
-			{token ? (
+			{clientToken &&
 				links.map((link, index) => (
 					<li key={index}>
 						<Link
@@ -40,10 +40,7 @@ export function HeaderNav() {
 							{link.name}
 						</Link>
 					</li>
-				))
-			) : (
-				<p></p>
-			)}
+				))}
 		</ul>
 	)
 }
