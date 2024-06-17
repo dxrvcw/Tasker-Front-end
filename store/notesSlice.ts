@@ -1,19 +1,24 @@
 import { createNote, deleteNote, getNotes, updateNote } from '@/data/actions'
 import { INote } from '@/utils/definitions'
 import { StateCreator } from 'zustand'
+import { AuthSlice } from './authSlice'
+import { ISharedSlice } from './store'
 
 export interface NotesSlice {
 	notes: INote[]
-	token: string | null
 	fetchNotes: () => Promise<void>
 	updateNote: (id: string, title: string, description?: string) => Promise<void>
 	deleteNote: (id: string) => Promise<void>
 	createNote: () => Promise<void>
 }
 
-export const createNotesSlice: StateCreator<NotesSlice> = (set, get) => ({
+export const createNotesSlice: StateCreator<
+	AuthSlice & NotesSlice & ISharedSlice,
+	[],
+	[],
+	NotesSlice
+> = (set, get) => ({
 	notes: [],
-	token: get().token,
 
 	fetchNotes: async () => {
 		const { token } = get()

@@ -1,16 +1,20 @@
 import { setCookieWithExpiry } from '@/utils/utils'
 import Cookies from 'js-cookie'
 import { StateCreator } from 'zustand'
+import { NotesSlice } from './notesSlice'
+import { ISharedSlice } from './store'
 
 export interface AuthSlice {
-	token: string | null
 	setToken: (token: string | null) => void
 	removeToken: () => void
 }
 
-export const createAuthSlice: StateCreator<AuthSlice> = set => ({
-	token: Cookies.get('token') || null,
-
+export const createAuthSlice: StateCreator<
+	AuthSlice & NotesSlice & ISharedSlice,
+	[],
+	[],
+	AuthSlice
+> = set => ({
 	setToken: (token: string | null) => {
 		if (token) {
 			setCookieWithExpiry('token', token, 30)
