@@ -10,14 +10,16 @@ export async function getTasks(token: string | undefined) {
 			Authorization: `Bearer ${token}`,
 		},
 	})
+
 	return response
 }
 
 export async function updateTask(
 	token: string | undefined,
 	id: string,
-	title: string,
-	finish_date: string
+	name: string,
+	complete_at: string,
+	completed: boolean
 ) {
 	if (!token) {
 		return
@@ -29,8 +31,9 @@ export async function updateTask(
 			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({
-			title,
-			finish_date,
+			name,
+			complete_at,
+			is_completed: completed,
 		}),
 	})
 	return response
@@ -49,8 +52,8 @@ export async function deleteTask(token: string, id: string) {
 
 export async function createTask(
 	token: string,
-	title = 'Untitled task',
-	finish_date = new Date(Date.now()).toISOString()
+	name = 'Untitled task',
+	complete_at = new Date(Date.now()).toISOString()
 ) {
 	if (!token) return
 
@@ -61,8 +64,8 @@ export async function createTask(
 			Authorization: `Bearer ${token}`,
 		},
 		body: JSON.stringify({
-			title,
-			finish_date,
+			name,
+			complete_at,
 		}),
 	})
 

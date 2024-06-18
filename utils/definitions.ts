@@ -9,7 +9,8 @@ export interface INote {
 export interface ITask {
 	id: number
 	user_id: number
-	finish_date: string
-	title: string
+	complete_at: string
+	name: string
 	created_at: string
+	is_completed: boolean
 }

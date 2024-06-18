@@ -11,7 +11,12 @@ import { ISharedSlice } from './store'
 export interface TasksSlice {
 	tasks: ITask[]
 	fetchTasks: () => Promise<void>
-	updateTask: (id: string, title: string, finish_date: string) => Promise<void>
+	updateTask: (
+		id: string,
+		title: string,
+		finish_date: string,
+		completed: boolean
+	) => Promise<void>
 	deleteTask: (id: string) => Promise<void>
 	createTask: () => Promise<void>
 }
@@ -32,13 +37,18 @@ export const createTasksSlice: StateCreator<
 		set({ tasks })
 	},
 
-	updateTask: async (id: string, title: string, finish_date: string) => {
+	updateTask: async (
+		id: string,
+		name: string,
+		create_at: string,
+		completed: boolean
+	) => {
 		const { token } = get()
 		if (!token) return
-		await updateTask(token, id, title, finish_date)
+		await updateTask(token, id, name, create_at, completed)
 		set(state => ({
 			tasks: state.tasks.map(task =>
-				task.id === +id ? { ...task, title, finish_date } : task
+				task.id === +id ? { ...task, name, create_at, completed } : task
 			),
 		}))
 	},

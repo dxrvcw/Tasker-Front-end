@@ -14,14 +14,14 @@ export function TasksSidebar() {
 
 	return (
 		<aside className='basis-1/4 border-r-2 h-full relative p-3'>
-			{tasks ? (
+			{tasks.length ? (
 				tasks.map(task => (
 					<Link
-						key={task.id}
-						href={`/tasks/${task.id}`}
+						key={task?.id}
+						href={`/tasks/${task?.id}`}
 						className='block w-full border-2 p-2 rounded-md mt-4 hover:bg-slate-100'
 					>
-						{task.title}
+						{task?.name}
 					</Link>
 				))
 			) : (

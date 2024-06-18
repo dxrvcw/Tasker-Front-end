@@ -1,7 +1,6 @@
 'use client'
 import { useStore } from '@/store/store'
-import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
-import { TimePicker } from '@mui/x-date-pickers/TimePicker'
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker'
 import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
 import { useRouter } from 'next/navigation'
@@ -11,37 +10,30 @@ dayjs.extend(utc)
 
 export function EditTaskForm({ id }: { id: string }) {
 	const { tasks, updateTask, deleteTask } = useStore()
-	const task = tasks.filter(task => task.id === +id)[0] || null
+	const task = tasks.find(task => task.id === +id) || null
 
 	const router = useRouter()
 
-	const [title, setTitle] = useState(task.title)
-	const [time, setTime] = useState<Dayjs | null>(dayjs.utc())
-	const [date, setDate] = useState<Dayjs | null>(dayjs.utc())
+	const [name, setName] = useState(task?.name || '')
+	const [date, setDate] = useState<Dayjs | null>(
+		dayjs(task?.created_at || new Date(Date.now()).toISOString())
+	)
+	const [completed, setCompleted] = useState(task?.is_completed || false)
 
 	useEffect(() => {
-		const taskDate = new Date(task.finish_date)
-		setTime(dayjs(taskDate))
-		setDate(dayjs(taskDate))
+		if (task) {
+			const taskDate = new Date(task.complete_at)
+			setDate(dayjs(taskDate))
+		}
 	}, [task])
 
-	const handleDateChange = (newDate: Dayjs | null) => {
-		setDate(newDate ? newDate.utc() : null)
-	}
-
-	const handleTimeChange = (newTime: Dayjs | null) => {
-		setTime(newTime ? newTime.utc() : null)
-	}
-
 	const handleSubmit = () => {
-		const newDate = new Date(
-			date?.get('year')!,
-			date?.get('month')!,
-			date?.get('date'),
-			time?.get('hour')!,
-			time?.get('minute')!
-		)
-		updateTask(id, title, newDate.toISOString())
+		console.log(date)
+		if (date) {
+			updateTask(id, name, date.utc().toISOString(), completed)
+		} else {
+			console.error('Invalid date or time')
+		}
 	}
 
 	const handleDelete = () => {
@@ -51,25 +43,28 @@ export function EditTaskForm({ id }: { id: string }) {
 
 	return (
 		<div className='flex flex-col px-36 py-6 justify-between w-full items-center gap-6'>
-			<label htmlFor='title' className='text-slate-500'>
+			<label htmlFor='name' className='text-slate-500'>
 				Назва:
 			</label>
 			<input
 				type='text'
-				name='title'
-				value={title}
-				onChange={e => setTitle(e.target.value)}
+				name='name'
+				value={name}
+				onChange={e => setName(e.target.value)}
 				placeholder='Введіть назву:'
 				className='w-full p-3 border rounded-md'
 			/>
 
-			<DateCalendar value={date} onChange={handleDateChange} />
-
-			<TimePicker
-				value={time}
-				onChange={handleTimeChange}
-				ampm={false}
-				className='w-48'
+			<DateTimePicker
+				label='Введіть дату та час'
+				value={date}
+				onChange={newDate => setDate(newDate)}
+			/>
+			<span>Виконано:</span>
+			<input
+				type='checkbox'
+				value={String(completed)}
+				onChange={() => setCompleted(!completed)}
 			/>
 			<div className='flex justify-end gap-5'>
 				<button
