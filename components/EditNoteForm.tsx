@@ -5,18 +5,13 @@ import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export function EditNoteForm({ id }: { id: string }) {
-	const notes = useStore(state => state.notes)
-	const updateNote = useStore(state => state.updateNote)
-	const deleteNote = useStore(state => state.deleteNote)
+	const { notes, updateNote, deleteNote } = useStore()
+	const note = notes.find(note => note.id === +id)
 
 	const router = useRouter()
 
-	const [title, setTitle] = useState(
-		notes.find(note => note.id === +id)?.title || ''
-	)
-	const [text, setText] = useState(
-		notes.find(note => note.id === +id)?.description || ''
-	)
+	const [title, setTitle] = useState(note?.title || '')
+	const [text, setText] = useState(note?.description || '')
 
 	const handleSave = () => {
 		updateNote(id, title, text)

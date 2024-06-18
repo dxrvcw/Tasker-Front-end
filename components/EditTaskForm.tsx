@@ -1,16 +1,29 @@
 'use client'
+import { useStore } from '@/store/store'
 import { DateCalendar } from '@mui/x-date-pickers/DateCalendar'
 import { TimePicker } from '@mui/x-date-pickers/TimePicker'
 import dayjs, { Dayjs } from 'dayjs'
 import utc from 'dayjs/plugin/utc'
-import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 dayjs.extend(utc)
 
-export function EditTaskForm() {
-	const [title, setTitle] = useState('')
+export function EditTaskForm({ id }: { id: string }) {
+	const { tasks, updateTask, deleteTask } = useStore()
+	const task = tasks.filter(task => task.id === +id)[0] || null
+
+	const router = useRouter()
+
+	const [title, setTitle] = useState(task.title)
 	const [time, setTime] = useState<Dayjs | null>(dayjs.utc())
 	const [date, setDate] = useState<Dayjs | null>(dayjs.utc())
+
+	useEffect(() => {
+		const taskDate = new Date(task.finish_date)
+		setTime(dayjs(taskDate))
+		setDate(dayjs(taskDate))
+	}, [task])
 
 	const handleDateChange = (newDate: Dayjs | null) => {
 		setDate(newDate ? newDate.utc() : null)
@@ -28,8 +41,12 @@ export function EditTaskForm() {
 			time?.get('hour')!,
 			time?.get('minute')!
 		)
+		updateTask(id, title, newDate.toISOString())
+	}
 
-		console.log(newDate.toISOString())
+	const handleDelete = () => {
+		deleteTask(id)
+		router.push('/tasks')
 	}
 
 	return (
@@ -55,7 +72,10 @@ export function EditTaskForm() {
 				className='w-48'
 			/>
 			<div className='flex justify-end gap-5'>
-				<button className='mt-6 bg-red-500 text-white w-fit px-6 py-2 hover:bg-red-600 rounded-md'>
+				<button
+					className='mt-6 bg-red-500 text-white w-fit px-6 py-2 hover:bg-red-600 rounded-md'
+					onClick={handleDelete}
+				>
 					Видалити
 				</button>
 				<button

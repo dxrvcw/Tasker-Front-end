@@ -1,6 +1,6 @@
 'use client'
 
-import { registerUser } from '@/data/actions'
+import { registerUser } from '@/data/userActions'
 import { useStore } from '@/store/store'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'

@@ -1,6 +1,6 @@
 'use client'
 
-import { loginUser } from '@/data/actions'
+import { loginUser } from '@/data/userActions'
 import { useStore } from '@/store/store'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'

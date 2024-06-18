@@ -1,7 +1,11 @@
-import { createNote, deleteNote, getNotes, updateNote } from '@/data/actions'
+import {
+	createNote,
+	deleteNote,
+	getNotes,
+	updateNote,
+} from '@/data/notesActions'
 import { INote } from '@/utils/definitions'
 import { StateCreator } from 'zustand'
-import { AuthSlice } from './authSlice'
 import { ISharedSlice } from './store'
 
 export interface NotesSlice {
@@ -13,7 +17,7 @@ export interface NotesSlice {
 }
 
 export const createNotesSlice: StateCreator<
-	AuthSlice & NotesSlice & ISharedSlice,
+	NotesSlice & ISharedSlice,
 	[],
 	[],
 	NotesSlice

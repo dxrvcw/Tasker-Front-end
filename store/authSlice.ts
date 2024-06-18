@@ -1,7 +1,6 @@
 import { setCookieWithExpiry } from '@/utils/utils'
 import Cookies from 'js-cookie'
 import { StateCreator } from 'zustand'
-import { NotesSlice } from './notesSlice'
 import { ISharedSlice } from './store'
 
 export interface AuthSlice {
@@ -10,7 +9,7 @@ export interface AuthSlice {
 }
 
 export const createAuthSlice: StateCreator<
-	AuthSlice & NotesSlice & ISharedSlice,
+	AuthSlice & ISharedSlice,
 	[],
 	[],
 	AuthSlice

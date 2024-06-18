@@ -5,3 +5,11 @@ export interface INote {
 	description?: string
 	created_at: string
 }
+
+export interface ITask {
+	id: number
+	user_id: number
+	finish_date: string
+	title: string
+	created_at: string
+}
